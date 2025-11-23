@@ -385,8 +385,12 @@ function enterEditMode() {
     
     // Show modification inputs
     for (let i = 1; i <= 10; i++) {
-        document.getElementById(`modDisplay${i}`).style.display = 'none';
-        document.getElementById(`modInput${i}`).style.display = 'block';
+        const modDisplay = document.getElementById(`modDisplay${i}`);
+        const modInput = document.getElementById(`modInput${i}`);
+        if (modDisplay && modInput) {
+            modDisplay.style.display = 'none';
+            modInput.style.display = 'block';
+        }
     }
     
     // Toggle buttons
@@ -439,8 +443,12 @@ function exitEditMode() {
     
     // Hide modification inputs
     for (let i = 1; i <= 10; i++) {
-        document.getElementById(`modDisplay${i}`).style.display = 'block';
-        document.getElementById(`modInput${i}`).style.display = 'none';
+        const modDisplay = document.getElementById(`modDisplay${i}`);
+        const modInput = document.getElementById(`modInput${i}`);
+        if (modDisplay && modInput) {
+            modDisplay.style.display = 'block';
+            modInput.style.display = 'none';
+        }
     }
     
     // Toggle buttons
@@ -589,6 +597,11 @@ async function downloadCard() {
 function displayModifications(member) {
     const modsList = document.getElementById('modificationsList');
     const modsCount = document.getElementById('modsCount');
+    
+    if (!modsList || !modsCount) {
+        return; // Elements not found, skip
+    }
+    
     modsList.innerHTML = '';
     
     let filledCount = 0;
