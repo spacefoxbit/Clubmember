@@ -613,6 +613,28 @@ function displayModifications(member) {
     
     modsCount.textContent = `${filledMods.length}/10`;
     
+    // Display stars (1 star per 2 modifications, half star for odd)
+    const modStars = document.getElementById('modStars');
+    if (modStars) {
+        modStars.innerHTML = '';
+        const fullStars = Math.floor(filledMods.length / 2);
+        const hasHalfStar = filledMods.length % 2 === 1;
+        
+        for (let i = 0; i < fullStars; i++) {
+            const star = document.createElement('span');
+            star.className = 'mod-star';
+            star.textContent = '⭐';
+            modStars.appendChild(star);
+        }
+        
+        if (hasHalfStar) {
+            const halfStar = document.createElement('span');
+            halfStar.className = 'mod-star';
+            halfStar.textContent = '🌟';
+            modStars.appendChild(halfStar);
+        }
+    }
+    
     if (filledMods.length === 0) {
         // Show 'No modification' message
         const noModDiv = document.createElement('div');
@@ -682,6 +704,28 @@ function displayModificationsEditMode(member) {
     }
     
     modsCount.textContent = `${filledCount}/10`;
+    
+    // Display stars in edit mode too
+    const modStars = document.getElementById('modStars');
+    if (modStars) {
+        modStars.innerHTML = '';
+        const fullStars = Math.floor(filledCount / 2);
+        const hasHalfStar = filledCount % 2 === 1;
+        
+        for (let i = 0; i < fullStars; i++) {
+            const star = document.createElement('span');
+            star.className = 'mod-star';
+            star.textContent = '⭐';
+            modStars.appendChild(star);
+        }
+        
+        if (hasHalfStar) {
+            const halfStar = document.createElement('span');
+            halfStar.className = 'mod-star';
+            halfStar.textContent = '🌟';
+            modStars.appendChild(halfStar);
+        }
+    }
 }
 
 // Display Tenure Stars

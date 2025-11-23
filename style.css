@@ -521,26 +521,17 @@ body {
   border-top: 2px solid var(--border);
 }
 
-.modifications-header {
+.mod-stars {
   display: flex;
-  justify-content: space-between;
   align-items: center;
-  margin-bottom: 16px;
+  gap: 4px;
+  padding: 8px 0 16px 0;
+  font-size: 18px;
 }
 
-.modifications-title {
-  font-size: 16px;
-  font-weight: 700;
-  color: var(--text);
-}
-
-.modifications-count {
-  font-size: 13px;
-  font-weight: 600;
-  color: var(--muted);
-  background: var(--border);
-  padding: 4px 10px;
-  border-radius: 12px;
+.mod-star {
+  color: #fbbf24;
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
 }
 
 .modifications-list {
