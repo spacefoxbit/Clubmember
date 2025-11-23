@@ -514,6 +514,89 @@ body {
   box-shadow: 0 0 0 3px rgba(14, 165, 233, 0.1);
 }
 
+/* Modifications Section */
+.modifications-section {
+  margin-top: 28px;
+  padding-top: 24px;
+  border-top: 2px solid var(--border);
+}
+
+.modifications-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 16px;
+}
+
+.modifications-title {
+  font-size: 16px;
+  font-weight: 700;
+  color: var(--text);
+}
+
+.modifications-count {
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--muted);
+  background: var(--border);
+  padding: 4px 10px;
+  border-radius: 12px;
+}
+
+.modifications-list {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.mod-item {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.mod-number {
+  font-size: 12px;
+  font-weight: 700;
+  color: var(--muted);
+  min-width: 24px;
+  text-align: center;
+}
+
+.mod-input {
+  flex: 1;
+  padding: 10px 12px;
+  border-radius: 8px;
+  border: 2px solid var(--border);
+  font-size: 14px;
+  font-family: inherit;
+  transition: all 0.2s ease;
+  color: var(--text);
+}
+
+.mod-input::placeholder {
+  color: var(--muted);
+  font-style: italic;
+}
+
+.mod-input:focus {
+  outline: none;
+  border-color: var(--accent);
+  box-shadow: 0 0 0 3px rgba(14, 165, 233, 0.1);
+}
+
+.mod-display {
+  flex: 1;
+  font-size: 14px;
+  color: var(--text);
+  padding: 4px 0;
+}
+
+.mod-display.empty {
+  color: var(--muted);
+  font-style: italic;
+}
+
 /* Card Footer */
 .card-footer {
   background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%);

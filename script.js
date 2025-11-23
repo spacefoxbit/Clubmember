@@ -119,7 +119,7 @@ async function loadSheetData() {
     try {
         const response = await gapi.client.sheets.spreadsheets.values.get({
             spreadsheetId: SHEET_ID,
-            range: `${SHEET_NAME}!A:G`,
+            range: `${SHEET_NAME}!A:P`,
         });
         
         const rows = response.result.values;
@@ -261,6 +261,9 @@ function displayMemberCard(member) {
     memberModel.textContent = memberModelVal;
     memberModel.classList.toggle('na', isNA(member['Model']));
     
+    // Display modifications
+    displayModifications(member);
+    
     // Set car image based on color
     setCarImage(member['Car Color']);
     
@@ -380,6 +383,12 @@ function enterEditMode() {
     inputMemberState.value = currentMember['Location'] || '';
     inputMemberModel.value = currentMember['Model'] || '';
     
+    // Show modification inputs
+    for (let i = 1; i <= 10; i++) {
+        document.getElementById(`modDisplay${i}`).style.display = 'none';
+        document.getElementById(`modInput${i}`).style.display = 'block';
+    }
+    
     // Toggle buttons
     editBtn.style.display = 'none';
     saveBtn.style.display = 'flex';
@@ -428,6 +437,12 @@ function exitEditMode() {
     inputMemberState.style.display = 'none';
     inputMemberModel.style.display = 'none';
     
+    // Hide modification inputs
+    for (let i = 1; i <= 10; i++) {
+        document.getElementById(`modDisplay${i}`).style.display = 'block';
+        document.getElementById(`modInput${i}`).style.display = 'none';
+    }
+    
     // Toggle buttons
     editBtn.style.display = 'flex';
     saveBtn.style.display = 'none';
@@ -452,6 +467,12 @@ async function saveChanges() {
     const updatedState = inputMemberState.value.trim();
     const updatedModel = inputMemberModel.value.trim();
     
+    // Get modifications
+    const modifications = {};
+    for (let i = 1; i <= 10; i++) {
+        modifications[`mod${i}`] = document.getElementById(`modInput${i}`).value.trim();
+    }
+    
     // Show loading
     saveBtn.disabled = true;
     saveBtn.innerHTML = '<span class="btn-icon">⏳</span><span class="btn-text">Saving...</span>';
@@ -471,7 +492,8 @@ async function saveChanges() {
                 location: updatedState,
                 plate: currentMember['License Plate'],
                 color: updatedColor,
-                model: updatedModel
+                model: updatedModel,
+                ...modifications
             })
         });
         
@@ -482,6 +504,11 @@ async function saveChanges() {
         currentMember['Location'] = updatedState;
         currentMember['Car Color'] = updatedColor;
         currentMember['Model'] = updatedModel;
+        
+        // Update modifications
+        for (let i = 1; i <= 10; i++) {
+            currentMember[`Mod${i}`] = modifications[`mod${i}`];
+        }
         
         // Wait a bit for the sheet to update
         await new Promise(resolve => setTimeout(resolve, 1000));
@@ -556,6 +583,51 @@ async function downloadCard() {
         downloadBtn.disabled = false;
         downloadBtn.innerHTML = '<span class="btn-icon">📥</span><span class="btn-text">Download Card as PNG</span>';
     }
+}
+
+// Display Modifications
+function displayModifications(member) {
+    const modsList = document.getElementById('modificationsList');
+    const modsCount = document.getElementById('modsCount');
+    modsList.innerHTML = '';
+    
+    let filledCount = 0;
+    
+    for (let i = 1; i <= 10; i++) {
+        const modKey = `Mod${i}`;
+        const modValue = member[modKey] || '';
+        
+        if (modValue.trim() !== '') {
+            filledCount++;
+        }
+        
+        const modItem = document.createElement('div');
+        modItem.className = 'mod-item';
+        
+        const modNumber = document.createElement('span');
+        modNumber.className = 'mod-number';
+        modNumber.textContent = i;
+        
+        const modDisplay = document.createElement('div');
+        modDisplay.className = modValue.trim() === '' ? 'mod-display empty' : 'mod-display';
+        modDisplay.textContent = modValue.trim() === '' ? 'No modification' : modValue;
+        modDisplay.id = `modDisplay${i}`;
+        
+        const modInput = document.createElement('input');
+        modInput.type = 'text';
+        modInput.className = 'mod-input';
+        modInput.id = `modInput${i}`;
+        modInput.value = modValue;
+        modInput.placeholder = 'Enter modification...';
+        modInput.style.display = 'none';
+        
+        modItem.appendChild(modNumber);
+        modItem.appendChild(modDisplay);
+        modItem.appendChild(modInput);
+        modsList.appendChild(modItem);
+    }
+    
+    modsCount.textContent = `${filledCount}/10`;
 }
 
 // Display Tenure Stars
