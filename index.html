@@ -1,0 +1,208 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lexus Club Malaysia - Member Lookup</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="container">
+        <!-- Header Section -->
+        <header class="header">
+            <h1>🚗 Member Verification Portal</h1>
+            <p class="subtitle">Lexus Club Malaysia</p>
+        </header>
+
+        <!-- Dashboard Section -->
+        <div class="dashboard-card card">
+            <div class="dashboard-header">
+                <h2 class="dashboard-title">Member Statistics</h2>
+                <div class="total-members">
+                    <span class="total-label">Total Members</span>
+                    <span class="total-count" id="totalMembers">-</span>
+                </div>
+            </div>
+            <div class="stats-grid" id="statsGrid">
+                <!-- Stats will be dynamically populated here -->
+            </div>
+        </div>
+
+        <!-- Register Section -->
+        <div class="register-section">
+            <div class="register-content">
+                <h3 class="register-title">Not a member yet?</h3>
+                <p class="register-text">Join the Lexus Club Malaysia community today!</p>
+                <a href="https://docs.google.com/forms/d/e/1FAIpQLSdWoTgX-Ue3MoWj7ZgMssAMZqVV-yU-ykjQVC-nzhSayIJmHQ/viewform?usp=dialog" target="_blank" class="register-btn">
+                    <span class="btn-icon">📝</span>
+                    <span class="btn-text">Register New Member</span>
+                </a>
+            </div>
+        </div>
+
+        <!-- Search Card -->
+        <div class="card search-card">
+            <label for="plateInput" class="input-label">Enter Car Plate Number</label>
+            <div class="search-group">
+                <input 
+                    type="text" 
+                    id="plateInput" 
+                    placeholder="e.g., ABC1234" 
+                    class="plate-input"
+                    autocomplete="off"
+                >
+                <button id="searchBtn" class="search-btn">
+                    <span class="btn-text">Search</span>
+                    <span class="btn-icon">🔍</span>
+                </button>
+            </div>
+            <p class="hint-text">Enter the vehicle registration plate to verify membership</p>
+        </div>
+
+        <!-- Results Container -->
+        <div id="resultsContainer" class="results-container" style="display: none;">
+            <!-- Error Message -->
+            <div id="errorMessage" class="error-card" style="display: none;">
+                <div class="error-icon">❌</div>
+                <div class="error-content">
+                    <h3>Member Not Found</h3>
+                    <p>We couldn't find a member with plate number <strong id="errorPlate"></strong>.</p>
+                    <p class="error-hint">Please check the plate number and try again.</p>
+                </div>
+            </div>
+
+            <!-- Member Card -->
+            <div id="memberCard" class="member-card-container" style="display: none;">
+                <div class="member-card" id="cardToDownload">
+                    <div class="card-header">
+                        <div class="card-badge">VERIFIED MEMBER</div>
+                        <div class="card-logo">LEXUS CLUB</div>
+                    </div>
+                    
+                    <img src="stamp/stamper.webp" alt="Verified Stamp" class="verification-stamp">
+                    
+                    <div class="card-body">
+                        <div class="car-image-container">
+                            <img id="carImage" src="" alt="Car" class="car-image">
+                        </div>
+                        
+                        <div class="member-details">
+                            <div class="detail-row">
+                                <div class="detail-label">Member Since</div>
+                                <div class="detail-value" id="memberSince">-</div>
+                                <input type="date" class="detail-input" id="inputMemberSince" style="display: none;">
+                            </div>
+                            
+                            <div class="tenure-stars" id="tenureStars">
+                                <!-- Stars will be dynamically added here -->
+                            </div>
+                            
+                            <div class="detail-row">
+                                <div class="detail-label">Member Name</div>
+                                <div class="detail-value" id="memberName">-</div>
+                                <input type="text" class="detail-input" id="inputMemberName" style="display: none;">
+                            </div>
+                            
+                            <div class="detail-row">
+                                <div class="detail-label">Plate Number</div>
+                                <div class="detail-value highlight" id="memberPlate">-</div>
+                            </div>
+                            
+                            <div class="detail-row">
+                                <div class="detail-label">Car Color</div>
+                                <div class="detail-value" id="memberColor">-</div>
+                                <select class="detail-input" id="inputMemberColor" style="display: none;">
+                                    <option value="">Select Color</option>
+                                    <option value="Black">Black</option>
+                                    <option value="White">White</option>
+                                    <option value="Red">Red</option>
+                                    <option value="Blue">Blue</option>
+                                    <option value="Gray">Gray</option>
+                                    <option value="Titanium">Titanium</option>
+                                    <option value="Chrome">Chrome</option>
+                                    <option value="Iridium">Iridium</option>
+                                </select>
+                            </div>
+                            
+                            <div class="detail-row">
+                                <div class="detail-label">State</div>
+                                <div class="detail-value" id="memberState">-</div>
+                                <select class="detail-input" id="inputMemberState" style="display: none;">
+                                    <option value="">Select State</option>
+                                    <option value="Johor">Johor</option>
+                                    <option value="Kedah">Kedah</option>
+                                    <option value="Kelantan">Kelantan</option>
+                                    <option value="Melaka">Melaka</option>
+                                    <option value="N.Sembilan">Negeri Sembilan</option>
+                                    <option value="Pahang">Pahang</option>
+                                    <option value="Penang">Penang</option>
+                                    <option value="Perak">Perak</option>
+                                    <option value="Perlis">Perlis</option>
+                                    <option value="Sabah">Sabah</option>
+                                    <option value="Sarawak">Sarawak</option>
+                                    <option value="Selangor">Selangor</option>
+                                    <option value="Terengganu">Terengganu</option>
+                                    <option value="W.Persekutuan">W.Persekutuan</option>
+                                    <option value="Singapore">Singapore</option>
+                                </select>
+                            </div>
+                            
+                            <div class="detail-row">
+                                <div class="detail-label">Model</div>
+                                <div class="detail-value" id="memberModel">-</div>
+                                <select class="detail-input" id="inputMemberModel" style="display: none;">
+                                    <option value="">Select Model</option>
+                                    <option value="Mode Black">Mode Black</option>
+                                    <option value="F Sport">F Sport</option>
+                                    <option value="Luxury">Luxury</option>
+                                    <option value="Hybrid">Hybrid</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="card-footer">
+                        <div class="footer-text">Malaysia's Premier Lexus Community</div>
+                        <div class="footer-date" id="verificationDate">-</div>
+                    </div>
+                </div>
+                
+                <div class="action-buttons">
+                    <button id="editBtn" class="edit-btn">
+                        <span class="btn-icon">✏️</span>
+                        <span class="btn-text">Edit Missing Info</span>
+                    </button>
+                    
+                    <button id="saveBtn" class="save-btn" style="display: none;">
+                        <span class="btn-icon">💾</span>
+                        <span class="btn-text">Save Changes</span>
+                    </button>
+                    
+                    <button id="cancelBtn" class="cancel-btn" style="display: none;">
+                        <span class="btn-text">Cancel</span>
+                    </button>
+                </div>
+                
+                <button id="downloadBtn" class="download-btn">
+                    <span class="btn-icon">📥</span>
+                    <span class="btn-text">Download Card as PNG</span>
+                </button>
+            </div>
+        </div>
+
+        <!-- Loading Indicator -->
+        <div id="loadingIndicator" class="loading-indicator" style="display: none;">
+            <div class="spinner"></div>
+            <p>Searching member database...</p>
+        </div>
+    </div>
+
+    <!-- Scripts -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+    <script src="https://apis.google.com/js/api.js"></script>
+    <script src="script.js"></script>
+</body>
+</html>
