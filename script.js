@@ -264,10 +264,10 @@ function displayMemberCard(member) {
     // Display modifications
     displayModifications(member);
     
-    // Hide modifications section initially
+    // Show modifications section
     const modsSection = document.querySelector('.modifications-section');
     if (modsSection) {
-        modsSection.style.display = 'none';
+        modsSection.style.display = 'block';
     }
     
     // Set car image based on color
@@ -389,19 +389,12 @@ function enterEditMode() {
     inputMemberState.value = currentMember['Location'] || '';
     inputMemberModel.value = currentMember['Model'] || '';
     
-    // Show modification inputs
+    // Show modification inputs (all 10 fields)
+    displayModificationsEditMode(currentMember);
+    
     const modsSection = document.querySelector('.modifications-section');
     if (modsSection) {
         modsSection.style.display = 'block';
-    }
-    
-    for (let i = 1; i <= 10; i++) {
-        const modDisplay = document.getElementById(`modDisplay${i}`);
-        const modInput = document.getElementById(`modInput${i}`);
-        if (modDisplay && modInput) {
-            modDisplay.style.display = 'none';
-            modInput.style.display = 'block';
-        }
     }
     
     // Toggle buttons
@@ -452,20 +445,8 @@ function exitEditMode() {
     inputMemberState.style.display = 'none';
     inputMemberModel.style.display = 'none';
     
-    // Hide modification inputs
-    const modsSection = document.querySelector('.modifications-section');
-    if (modsSection) {
-        modsSection.style.display = 'none';
-    }
-    
-    for (let i = 1; i <= 10; i++) {
-        const modDisplay = document.getElementById(`modDisplay${i}`);
-        const modInput = document.getElementById(`modInput${i}`);
-        if (modDisplay && modInput) {
-            modDisplay.style.display = 'block';
-            modInput.style.display = 'none';
-        }
-    }
+    // Re-display modifications (only filled ones)
+    displayModifications(currentMember);
     
     // Toggle buttons
     editBtn.style.display = 'flex';
@@ -620,8 +601,59 @@ function displayModifications(member) {
     
     modsList.innerHTML = '';
     
+    // Collect filled modifications
+    const filledMods = [];
+    for (let i = 1; i <= 10; i++) {
+        const modKey = `Mod${i}`;
+        const modValue = member[modKey] || '';
+        if (modValue.trim() !== '') {
+            filledMods.push({ number: i, value: modValue });
+        }
+    }
+    
+    modsCount.textContent = `${filledMods.length}/10`;
+    
+    if (filledMods.length === 0) {
+        // Show 'No modification' message
+        const noModDiv = document.createElement('div');
+        noModDiv.className = 'mod-display empty';
+        noModDiv.textContent = 'No modification';
+        modsList.appendChild(noModDiv);
+    } else {
+        // Show only filled modifications
+        filledMods.forEach(mod => {
+            const modItem = document.createElement('div');
+            modItem.className = 'mod-item';
+            
+            const modNumber = document.createElement('span');
+            modNumber.className = 'mod-number';
+            modNumber.textContent = mod.number;
+            
+            const modDisplay = document.createElement('div');
+            modDisplay.className = 'mod-display';
+            modDisplay.textContent = mod.value;
+            
+            modItem.appendChild(modNumber);
+            modItem.appendChild(modDisplay);
+            modsList.appendChild(modItem);
+        });
+    }
+}
+
+// Display Modifications Edit Mode
+function displayModificationsEditMode(member) {
+    const modsList = document.getElementById('modificationsList');
+    const modsCount = document.getElementById('modsCount');
+    
+    if (!modsList || !modsCount) {
+        return;
+    }
+    
+    modsList.innerHTML = '';
+    
     let filledCount = 0;
     
+    // Show all 10 input fields
     for (let i = 1; i <= 10; i++) {
         const modKey = `Mod${i}`;
         const modValue = member[modKey] || '';
@@ -637,21 +669,14 @@ function displayModifications(member) {
         modNumber.className = 'mod-number';
         modNumber.textContent = i;
         
-        const modDisplay = document.createElement('div');
-        modDisplay.className = modValue.trim() === '' ? 'mod-display empty' : 'mod-display';
-        modDisplay.textContent = modValue.trim() === '' ? 'No modification' : modValue;
-        modDisplay.id = `modDisplay${i}`;
-        
         const modInput = document.createElement('input');
         modInput.type = 'text';
         modInput.className = 'mod-input';
         modInput.id = `modInput${i}`;
         modInput.value = modValue;
         modInput.placeholder = 'Enter modification...';
-        modInput.style.display = 'none';
         
         modItem.appendChild(modNumber);
-        modItem.appendChild(modDisplay);
         modItem.appendChild(modInput);
         modsList.appendChild(modItem);
     }
