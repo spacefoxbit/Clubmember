@@ -264,6 +264,12 @@ function displayMemberCard(member) {
     // Display modifications
     displayModifications(member);
     
+    // Hide modifications section initially
+    const modsSection = document.querySelector('.modifications-section');
+    if (modsSection) {
+        modsSection.style.display = 'none';
+    }
+    
     // Set car image based on color
     setCarImage(member['Car Color']);
     
@@ -384,6 +390,11 @@ function enterEditMode() {
     inputMemberModel.value = currentMember['Model'] || '';
     
     // Show modification inputs
+    const modsSection = document.querySelector('.modifications-section');
+    if (modsSection) {
+        modsSection.style.display = 'block';
+    }
+    
     for (let i = 1; i <= 10; i++) {
         const modDisplay = document.getElementById(`modDisplay${i}`);
         const modInput = document.getElementById(`modInput${i}`);
@@ -442,6 +453,11 @@ function exitEditMode() {
     inputMemberModel.style.display = 'none';
     
     // Hide modification inputs
+    const modsSection = document.querySelector('.modifications-section');
+    if (modsSection) {
+        modsSection.style.display = 'none';
+    }
+    
     for (let i = 1; i <= 10; i++) {
         const modDisplay = document.getElementById(`modDisplay${i}`);
         const modInput = document.getElementById(`modInput${i}`);
