@@ -33,6 +33,7 @@ const SHEET_ID = '1WOrbFw6DMuYmP0FocbO_CGpVe39zPpk9B_bz_w7cFJ8'; // Replace with
 const API_KEY = 'AIzaSyCzjGbnauiwyvD2As31QosJaM7QLQZKHj8'; // Replace with your Google API Key
 const SHEET_NAME = 'Members List'; // Live tab connected to Google Form
 const APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbydzJIjyGiMnbA5eaWbk1FS_nvcErIBagiHWFDfizPs0A6dl8Vpu_9OAYoSCRxniGC8/exec';
+const APPS_SCRIPT_INSIGHTS_URL = 'https://script.google.com/macros/s/AKfycbwwQ9yfMKLM_LzgHdkNp0O9axB5INVGPtzXn0TwqrF3oyVjTef5wBEDZUNMVfXvk7Ff/exec'; // Will be set after deploying insights script
 
 // Member data cache
 let membersData = [];
@@ -112,6 +113,23 @@ function setupEventListeners() {
     plateInput.addEventListener('input', (e) => {
         e.target.value = e.target.value.toUpperCase();
     });
+    
+    // Dashboard toggle
+    const dashboardToggle = document.getElementById('dashboardToggle');
+    const dropdownIcon = document.getElementById('dropdownIcon');
+    const statsGrid = document.getElementById('statsGrid');
+    
+    if (dashboardToggle && dropdownIcon && statsGrid) {
+        dashboardToggle.addEventListener('click', () => {
+            if (statsGrid.style.display === 'none') {
+                statsGrid.style.display = 'grid';
+                dropdownIcon.classList.add('open');
+            } else {
+                statsGrid.style.display = 'none';
+                dropdownIcon.classList.remove('open');
+            }
+        });
+    }
 }
 
 // Load Sheet Data
@@ -150,6 +168,9 @@ async function loadSheetData() {
         
         // Update dashboard statistics
         updateDashboard();
+        
+        // Load AI insights
+        loadInsights();
     } catch (error) {
         console.error('Error loading sheet data:', error);
         alert('Failed to load member data. Please check your Sheet ID and API Key.');
@@ -850,4 +871,156 @@ function capitalizeWords(str) {
     return str.split(' ').map(word => 
         word.charAt(0).toUpperCase() + word.slice(1).toLowerCase()
     ).join(' ');
+}
+
+// Load AI Insights
+async function loadInsights() {
+    const insightsSection = document.getElementById('insightsSection');
+    const insightsLoading = document.getElementById('insightsLoading');
+    const insightsContent = document.getElementById('insightsContent');
+    
+    if (!insightsSection || !insightsLoading || !insightsContent) return;
+    
+    // Show section and loading state
+    insightsSection.style.display = 'block';
+    insightsLoading.style.display = 'flex';
+    insightsContent.innerHTML = '';
+    
+    try {
+        // Check if Apps Script URL is configured
+        if (APPS_SCRIPT_INSIGHTS_URL === 'YOUR_APPS_SCRIPT_INSIGHTS_URL_HERE') {
+            // Use mock data for local testing
+            await new Promise(resolve => setTimeout(resolve, 1500)); // Simulate API delay
+            displayMockInsights();
+            return;
+        }
+        
+        // Fetch insights from Apps Script
+        const response = await fetch(`${APPS_SCRIPT_INSIGHTS_URL}?action=getInsights`);
+        const data = await response.json();
+        
+        if (data.success && data.insights) {
+            displayInsights(data.insights, data.metrics);
+        } else {
+            throw new Error('Failed to load insights');
+        }
+    } catch (error) {
+        console.error('Error loading insights:', error);
+        insightsContent.innerHTML = `
+            <p style="color: var(--muted); font-style: italic;">
+                ⚠️ Unable to load AI insights at this time. Please try again later.
+            </p>
+        `;
+    } finally {
+        insightsLoading.style.display = 'none';
+    }
+}
+
+// Display Insights
+function displayInsights(insightsText, metrics) {
+    const insightsContent = document.getElementById('insightsContent');
+    
+    let html = `<p>${insightsText}</p>`;
+    
+    if (metrics) {
+        html += '<div class="insights-metrics">';
+        
+        if (metrics.newMembers !== undefined) {
+            html += `
+                <div class="insight-metric">
+                    <div class="metric-label">New Members (3 months)</div>
+                    <div class="metric-value">${metrics.newMembers}</div>
+                </div>
+            `;
+        }
+        
+        if (metrics.topState) {
+            html += `
+                <div class="insight-metric">
+                    <div class="metric-label">Most Popular State</div>
+                    <div class="metric-value">${metrics.topState}</div>
+                </div>
+            `;
+        }
+        
+        if (metrics.favoriteColor) {
+            html += `
+                <div class="insight-metric">
+                    <div class="metric-label">Favorite Color (3 months)</div>
+                    <div class="metric-value">${metrics.favoriteColor}</div>
+                </div>
+            `;
+        }
+        
+        if (metrics.totalEdits !== undefined) {
+            html += `
+                <div class="insight-metric">
+                    <div class="metric-label">Recent Edits</div>
+                    <div class="metric-value">${metrics.totalEdits}</div>
+                </div>
+            `;
+        }
+        
+        html += '</div>';
+    }
+    
+    insightsContent.innerHTML = html;
+}
+
+// Display Mock Insights (for local testing)
+function displayMockInsights() {
+    // Calculate actual metrics from loaded data
+    const threeMonthsAgo = new Date();
+    threeMonthsAgo.setMonth(threeMonthsAgo.getMonth() - 3);
+    
+    // Count new members in last 3 months
+    const newMembers = membersData.filter(m => {
+        const memberDate = new Date(m['Timestamp']);
+        return memberDate >= threeMonthsAgo;
+    }).length;
+    
+    // Find most common state
+    const stateCounts = {};
+    membersData.forEach(m => {
+        const state = m['Location'] || 'Unknown';
+        if (state.trim() !== '') {
+            stateCounts[state] = (stateCounts[state] || 0) + 1;
+        }
+    });
+    const topState = Object.entries(stateCounts).sort((a, b) => b[1] - a[1])[0]?.[0] || 'N/A';
+    
+    // Find favorite color in last 3 months
+    const recentColorCounts = {};
+    membersData.filter(m => {
+        const memberDate = new Date(m['Timestamp']);
+        return memberDate >= threeMonthsAgo;
+    }).forEach(m => {
+        const color = m['Car Color'] || 'Unknown';
+        if (color.trim() !== '') {
+            recentColorCounts[color] = (recentColorCounts[color] || 0) + 1;
+        }
+    });
+    const favoriteColor = Object.entries(recentColorCounts).sort((a, b) => b[1] - a[1])[0]?.[0] || 'N/A';
+    
+    // Count members with modifications (proxy for edits)
+    const totalEdits = membersData.filter(m => {
+        for (let i = 1; i <= 10; i++) {
+            if (m[`Mod${i}`] && m[`Mod${i}`].trim() !== '') {
+                return true;
+            }
+        }
+        return false;
+    }).length;
+    
+    const metrics = {
+        newMembers,
+        topState,
+        favoriteColor,
+        totalEdits
+    };
+    
+    // Generate mock AI summary
+    const insightsText = `The Lexus 4IS Club Malaysia community continues to grow with ${newMembers} new members joining in the past three months. ${topState} leads in membership, reflecting strong regional enthusiasm. ${favoriteColor} has emerged as the most popular car color choice among recent members, while ${totalEdits} members have actively personalized their profiles with modification details, showcasing the community's passion for customization.`;
+    
+    displayInsights(insightsText, metrics);
 }

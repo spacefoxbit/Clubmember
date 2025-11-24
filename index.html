@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Lexus Club Malaysia - Member Lookup</title>
+    <title>Lexus 4IS Club Malaysia - Member Lookup</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
@@ -14,19 +14,37 @@
         <!-- Header Section -->
         <header class="header">
             <h1>🚗 Member Verification Portal</h1>
-            <p class="subtitle">Lexus Club Malaysia</p>
+            <p class="subtitle">Lexus 4IS Club Malaysia</p>
         </header>
 
-        <!-- Dashboard Section -->
+        <!-- Club Insights Section -->
+        <div class="insights-section card" id="insightsSection" style="display: none;">
+            <div class="insights-header">
+                <div class="insights-title-group">
+                    <h3 class="insights-title">🤖 AI Club Insights</h3>
+                    <p class="insights-subtitle">Powered by Google Gemini</p>
+                </div>
+            </div>
+            <div id="insightsLoading" class="insights-loading" style="display: none;">
+                <div class="spinner-small"></div>
+                <span>Generating insights...</span>
+            </div>
+            <div id="insightsContent" class="insights-content">
+                <!-- AI insights will be displayed here -->
+            </div>
+        </div>
+
+        <!-- Dashboard Section (Collapsible) -->
         <div class="dashboard-card card">
-            <div class="dashboard-header">
+            <div class="dashboard-header" id="dashboardToggle" style="cursor: pointer;">
                 <h2 class="dashboard-title">Member Statistics</h2>
                 <div class="total-members">
                     <span class="total-label">Total Members</span>
                     <span class="total-count" id="totalMembers">-</span>
                 </div>
+                <button class="dropdown-toggle" id="dropdownIcon">▼</button>
             </div>
-            <div class="stats-grid" id="statsGrid">
+            <div class="stats-grid" id="statsGrid" style="display: none;">
                 <!-- Stats will be dynamically populated here -->
             </div>
         </div>
@@ -35,7 +53,7 @@
         <div class="register-section">
             <div class="register-content">
                 <h3 class="register-title">Not a member yet?</h3>
-                <p class="register-text">Join the Lexus Club Malaysia community today!</p>
+                <p class="register-text">Join the Lexus 4IS Club Malaysia community today!</p>
                 <a href="https://docs.google.com/forms/d/e/1FAIpQLSdWoTgX-Ue3MoWj7ZgMssAMZqVV-yU-ykjQVC-nzhSayIJmHQ/viewform?usp=dialog" target="_blank" class="register-btn">
                     <span class="btn-icon">📝</span>
                     <span class="btn-text">Register New Member</span>
@@ -90,7 +108,7 @@
                 <div class="member-card" id="cardToDownload">
                     <div class="card-header">
                         <div class="card-badge">VERIFIED MEMBER</div>
-                        <div class="card-logo">LEXUS CLUB</div>
+                        <div class="card-logo">LEXUS 4IS</div>
                     </div>
                     
                     <img src="stamp/stamper.webp" alt="Verified Stamp" class="verification-stamp">
@@ -189,7 +207,7 @@
                     </div>
                     
                     <div class="card-footer">
-                        <div class="footer-text">Malaysia's Premier Lexus Community</div>
+                        <div class="footer-text">Malaysia's Premier Lexus 4IS Community</div>
                         <div class="footer-date" id="verificationDate">-</div>
                     </div>
                 </div>
@@ -227,6 +245,6 @@
     <!-- Scripts -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
     <script src="https://apis.google.com/js/api.js"></script>
-    <script src="script.js"></script>
+    <script src="script.js?v=2"></script>
 </body>
 </html>
