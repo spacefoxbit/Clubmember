@@ -66,7 +66,7 @@ Edit `script.js` and replace the following values:
 ```javascript
 // Google Sheets Configuration
 const SHEET_ID = 'YOUR_SHEET_ID_HERE'; // Replace with your actual Sheet ID
-const API_KEY = 'AIzaSyCzjGbnauiwyvD2As31QosJaM7QLQZKHj8'; // Replace with your actual API Key
+const API_KEY = 'YOUR_API_KEY_HERE'; // Replace with your actual API Key
 const SHEET_NAME = 'Sheet1'; // Replace if your sheet has a different name
 ```
 

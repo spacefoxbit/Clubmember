@@ -188,6 +188,74 @@ function updateDashboard() {
         `;
         statsGrid.appendChild(statItem);
     });
+    
+    // Update top modders
+    updateTopModders();
+}
+
+// Update Top Modders
+function updateTopModders() {
+    // Count modifications for each member
+    const membersWithMods = membersData.map(member => {
+        let modCount = 0;
+        for (let i = 1; i <= 10; i++) {
+            const modKey = `Mod${i}`;
+            const modValue = member[modKey] || '';
+            if (modValue.trim() !== '') {
+                modCount++;
+            }
+        }
+        return { member, modCount };
+    }).filter(item => item.modCount > 0) // Only members with modifications
+      .sort((a, b) => b.modCount - a.modCount) // Sort by mod count descending
+      .slice(0, 5); // Top 5
+    
+    const topModdersSection = document.getElementById('topModdersSection');
+    const topModdersGrid = document.getElementById('topModdersGrid');
+    
+    if (membersWithMods.length === 0) {
+        topModdersSection.style.display = 'none';
+        return;
+    }
+    
+    topModdersSection.style.display = 'block';
+    topModdersGrid.innerHTML = '';
+    
+    membersWithMods.forEach((item, index) => {
+        const { member, modCount } = item;
+        const rank = index + 1;
+        
+        // Calculate stars
+        const fullStars = Math.floor(modCount / 2);
+        const hasHalfStar = modCount % 2 === 1;
+        let starsHTML = '';
+        for (let i = 0; i < fullStars; i++) {
+            starsHTML += '⭐';
+        }
+        if (hasHalfStar) {
+            starsHTML += '🌟';
+        }
+        
+        const card = document.createElement('div');
+        card.className = 'top-modder-card';
+        card.innerHTML = `
+            <div class="top-modder-rank rank-${rank}">${rank}</div>
+            <div class="top-modder-name">${member['Name'] || 'Anonymous'}</div>
+            <div class="top-modder-plate">${member['License Plate'] || 'N/A'}</div>
+            <div class="top-modder-mods">
+                <div class="top-modder-stars">${starsHTML}</div>
+                <div class="top-modder-count">${modCount} mods</div>
+            </div>
+        `;
+        
+        // Click to view full profile
+        card.addEventListener('click', () => {
+            plateInput.value = member['License Plate'] || '';
+            performSearch();
+        });
+        
+        topModdersGrid.appendChild(card);
+    });
 }
 
 // Perform Search
